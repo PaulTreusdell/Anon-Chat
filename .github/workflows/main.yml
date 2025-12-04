@@ -1,0 +1,43 @@
+name: Simple CI  # Name of the workflow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12.6
+
+      - name: Install Python dependencies
+        working-directory: server
+        run: |
+          pip install pipenv
+          pipenv install --deploy --ignore-pipfile
+
+      - name: Run Django tests
+        working-directory: server
+        run: pipenv run python manage.py test
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.12.0
+
+      - name: Install Node dependencies
+        working-directory: client
+        run: npm install
+        
+      - name: Build React frontend
+        working-directory: client
+        run: npm run build
