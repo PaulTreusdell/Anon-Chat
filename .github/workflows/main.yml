@@ -27,7 +27,7 @@ jobs:
 
       - name: Run Django tests
         working-directory: server
-        run: pipenv run python manage.py test
+        run: pipenv run python manage.py test --settings=server.ci_settings
 
       - name: Set up Node
         uses: actions/setup-node@v3
